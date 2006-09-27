@@ -6,8 +6,10 @@ import os
 import sys
 import shutil
 from optparse import OptionParser
-import datetime
-from fetcher import py_tvm_fetcher
+#import datetime
+from mx.DateTime import *
+
+
 
 def printVersion():
 	print "version 0.0.1 - basic script handling stuff."
@@ -102,21 +104,32 @@ def runConfigure(userConfig,all_channels):
 		userConfig_file.close()
 			
 
-# get the tvmovie date string for today
-def getTvmDateString():
-	if (datetime.date.today().month < 10):
-       	 	monthStr = `0`+`datetime.date.today().month`
-	else:
-		monthStr = `datetime.date.today().month`
+def getTvmDateString(dayOffset):
+	#print "new date func"
+	todaysDate = now() + RelativeDateTime(days=dayOffset)
 
-	if (datetime.date.today().day < 10):
-       		 dayStr = `0`+`datetime.date.today().day`
+	if (todaysDate.day < 10):
+		dayStr = `0`+`todaysDate.day`
 	else:
-		dayStr = `datetime.date.today().day`
+		dayStr = todaysDate.day
 
-	todayString = `datetime.date.today().year`+monthStr+dayStr
-	
-	return todayString
+	if (todaysDate.month < 10):
+		monthStr = `0`+`todaysDate.month`
+	else:
+		monthStr = todaysDate.month
+
+	return `todaysDate.year`+str(monthStr)+str(dayStr)
+
+def getTvms(daysToGrab, user_configured_channels, todaysDate, tvmXmlUrl, tvmExtension):
+	print "get tvms"
+	count = 0
+
+	for user_channel in user_configured_channels:
+		while count < int(daysToGrab):
+			downloadUrl = tvmXmlUrl+getTvmDateString(count)+"_"+user_channel+tvmExtension
+			print downloadUrl
+				
+			count = count + 1		
 
 def main():
 
@@ -133,6 +146,13 @@ def main():
 	if options.show_version:
 		printVersion()
 		sys.exit(0)
+
+	if int(options.days) > 7 or int(options.days) < 1:
+		print "invalid days value, grabing 1 day."
+		daysToGrab = 1
+	else:
+		daysToGrab = options.days
+	
 	
 	if options.channelid_file:
 		channel_file=options.channelid_file		
@@ -146,20 +166,29 @@ def main():
 	all_channels = getChannelIDs(channel_file)
 
 	pytvHome = os.environ["HOME"]+os.sep+".xmltv"+os.sep+"pytv"+os.sep
+
+	if not os.path.exists(pytvHome):
+		os.makedirs(pytvHome)
+
 	userConfig = pytvHome+"tv_grab_de_tvmovie.conf"
 	downloadFolder = pytvHome+os.sep+"grabedTvms"+os.sep
+
+	if not os.path.exists(downloadFolder):
+		os.makedirs(downloadFolder)
 
 	if options.run_configure:
 		print "running channel configuration"
 		runConfigure(userConfig,all_channels)
 		sys.exit(0)
-
-	tvmDate = getTvmDateString()
+	
+	tvmDate = getTvmDateString(0)
 	tvmExtension = ".xml.tvm"
 	tvmXmlUrl = "http://tvmovie.kunde.serverflex.info/onlinedata/xml-gz5/"		
 
+	print "grabing "+`daysToGrab`+" days."
 	user_configured_channels = getUserChannels(userConfig)
-	print user_configured_channels
+
+	getTvms(daysToGrab, user_configured_channels, tvmDate, tvmXmlUrl, tvmExtension)
 		
 
 
