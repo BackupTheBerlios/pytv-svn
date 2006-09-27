@@ -6,8 +6,8 @@ import os
 import sys
 import shutil
 from optparse import OptionParser
-#import datetime
 from mx.DateTime import *
+import urllib
 
 
 
@@ -120,15 +120,25 @@ def getTvmDateString(dayOffset):
 
 	return `todaysDate.year`+str(monthStr)+str(dayStr)
 
-def getTvms(daysToGrab, user_configured_channels, todaysDate, tvmXmlUrl, tvmExtension):
+def getTvms(daysToGrab, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder):
 	print "get tvms"
 	count = 0
 
 	for user_channel in user_configured_channels:
 		while count < int(daysToGrab):
 			downloadUrl = tvmXmlUrl+getTvmDateString(count)+"_"+user_channel+tvmExtension
-			print downloadUrl
-				
+			print "downloading: "+downloadUrl
+			
+			urlHandler = urllib.urlopen(downloadUrl)
+			urlReader = urlHandler.read()
+			destFile = open(downloadFolder+getTvmDateString(count)+"_"+user_channel+tvmExtension, 'w')
+			destFile.write(urlReader)
+			destFile.close()	
+			if os.path.exists(downloadFolder+getTvmDateString(count)+"_"+user_channel+tvmExtension):
+				print "successfully downloaded: "+getTvmDateString(count)+"_"+user_channel+tvmExtension
+			else:
+				print "download of "+getTvmDateString(count)+"_"+user_channel+tvmExtension+" failed. exiting."
+				sys.exit(1)
 			count = count + 1		
 
 def main():
@@ -181,14 +191,13 @@ def main():
 		runConfigure(userConfig,all_channels)
 		sys.exit(0)
 	
-	tvmDate = getTvmDateString(0)
 	tvmExtension = ".xml.tvm"
 	tvmXmlUrl = "http://tvmovie.kunde.serverflex.info/onlinedata/xml-gz5/"		
 
 	print "grabing "+`daysToGrab`+" days."
 	user_configured_channels = getUserChannels(userConfig)
 
-	getTvms(daysToGrab, user_configured_channels, tvmDate, tvmXmlUrl, tvmExtension)
+	getTvms(daysToGrab, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder)
 		
 
 
