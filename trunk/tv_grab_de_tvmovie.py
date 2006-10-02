@@ -4,7 +4,7 @@
 # Copyright (C) 2006  Stefan Nistelberger (scuq@kages.at)
 #		      Hans-Peter Schadler (blade.runner@gmx.at)
 #		      Daniel Schrammel (nowx@gmx.at)
-# tv_grab_de_tvmobie.py - tv movie grabber
+# tv_grab_de_tvmovie.py - tv movie grabber
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,6 +26,7 @@ import readline
 import os
 import sys
 from optparse import OptionParser
+from write_xmltv import write_xml
 from mx.DateTime import *
 import urllib
 
@@ -57,6 +58,8 @@ def getUserChannels(user_channels_file):
 # suck in the channel_ids file into a dictionary
 def getChannelIDs(channel_file):
 	chidfile = open(channel_file, 'r')
+
+
 
 	count = 0
 	chids = {}
@@ -169,18 +172,24 @@ def main():
 	parser.add_option("-o", "--output-file", dest="output_file", help="set the output file")
 	parser.add_option("-c", "--channelid-file", dest="channelid_file", help="set location of the channel_ids file")
 	parser.add_option("-v", "--version", action="store_true", dest="show_version", default=False, help="show version")
+	parser.add_option("-n", "--nowx", action="store_true", dest="nowx", default=False, help="give it to nowx's class")
 
 	(options, args) = parser.parse_args()
+
+
 
 	if options.show_version:
 		printVersion()
 		sys.exit(0)
 
-	if int(options.days) > 7 or int(options.days) < 1:
-		print "invalid days value, grabing 1 day."
+	if not options.days:
 		daysToGrab = 1
 	else:
-		daysToGrab = options.days
+		if int(options.days) > 7 or int(options.days) < 1:
+			print "invalid days value, grabing 1 day."
+			daysToGrab = 1
+		else:
+			daysToGrab = options.days
 	
 	
 	if options.channelid_file:
@@ -216,7 +225,11 @@ def main():
 	print "grabing "+`daysToGrab`+" days."
 	user_configured_channels = getUserChannels(userConfig)
 
-	getTvms(daysToGrab, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder)
+	if options.nowx:
+		xmlwriter = write_xml(all_channels)	
+		sys.exit(0)	
+
+	#getTvms(daysToGrab, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder)
 		
 
 

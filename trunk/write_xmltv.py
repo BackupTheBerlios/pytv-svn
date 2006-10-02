@@ -1,7 +1,7 @@
 # Copyright (C) 2006  Stefan Nistelberger (scuq@kages.at)
 #		      Hans-Peter Schadler (blade.runner@gmx.at)
 #		      Daniel Schrammel (nowx@gmx.at)
-# tv_grab_de_tvmobie.py - tv movie grabber
+# tv_grab_de_tvmovie.py - tv movie grabber
 # write_xmltv.py - write out a xml file in xmltv format
 
 # This program is free software; you can redistribute it and/or
