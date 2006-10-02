@@ -18,6 +18,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+import gzip
+
 class convert_tvm_gz:
 	def __init__(self, tvmfile, gzfile):
 		self.tvmfile = tvmfile
@@ -60,5 +62,11 @@ class extract_xml:
 	def __init__(self, gzfile, xmlfile):
 		self.gzfile = gzfile
 		self.xmlfile = xmlfile
+
+		gzipfile = gzip.open(gzfile)
 		
-		return xmlfile
+		g = open(xmlfile, "wb")
+		g.write(gzipfile.read())
+		g.close
+						
+		return 0
