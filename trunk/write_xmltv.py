@@ -2,7 +2,7 @@
 #		      Hans-Peter Schadler (blade.runner@gmx.at)
 #		      Daniel Schrammel (nowx@gmx.at)
 # tv_grab_de_tvmovie.py - tv movie grabber
-# write_xmltv.py - write out a xml file in xmltv format
+# write_xmltv.py - module - write out a xml file in xmltv format
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
