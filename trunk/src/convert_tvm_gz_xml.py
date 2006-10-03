@@ -19,15 +19,24 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import gzip
+import os
 
-class convert_tvm_gz:
-	def __init__(self, tvmfile, gzfile):
+class convert_tvm_gz_xml:
+	def __init__(self, tvmfile,gzfile,xmlfile):
 		self.tvmfile = tvmfile
 		self.gzfile = gzfile
-
-		f = open(tvmfile, "rb")
+		self.xmlfile = xmlfile
+		
+	def tvm2gz(self):
+		# Opening the tvm and the new gzfile
+		if not(os.path.isfile(tvmfile)):
+			return 1
+		else:
+			f = open(tvmfile, "rb")
+			
 		g = open(gzfile, "wb")
 
+		# Building the gz file...
 		f.seek(0x006a,0)
 		g.write(f.read(6))
 		f.seek(0x0064,0)
@@ -52,21 +61,24 @@ class convert_tvm_gz:
 		g.write(f.read(100))
 		f.seek(0x03e8,0)
 		g.write(f.read())
+		# Building the gz file done
 
+		# Closing the files
 		f.close()
 		g.close()
 
 		return 0
 		
-class extract_xml:
-	def __init__(self, gzfile, xmlfile):
-		self.gzfile = gzfile
-		self.xmlfile = xmlfile
+	def extract_gz(self):
 
-		gzipfile = gzip.open(gzfile)
+		if not(os.path.isfile(gzfile)):
+			return 1
+		else: 
+			gzipfile = gzip.open(gzfile)
 		
 		g = open(xmlfile, "wb")
 		g.write(gzipfile.read())
 		g.close
-						
-		return 0
+			
+		return 0			
+	
