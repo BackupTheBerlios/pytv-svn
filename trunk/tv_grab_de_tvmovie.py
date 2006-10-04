@@ -38,7 +38,7 @@ import urllib
 
 
 def printVersion():
-	print "version 0.0.2 - downloading works now."
+	print "version 0.2 - see svn log"
 
 def getUserChannels(user_channels_file):
 	uchfile = open(user_channels_file, 'r')
