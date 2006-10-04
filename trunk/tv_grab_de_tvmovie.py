@@ -223,7 +223,6 @@ def main():
 	parser.add_option("-b", "--capabilities", action="store_true", dest="show_capabilities", default=False, help="show capabilities")
 	parser.add_option("-q", "--quiet", action="store_true", dest="be_quiet", default=False, help="only error msgs")
 	parser.add_option("-a", "--cache", action="store_true", dest="cache_mode", default=False, help="use cached xml files")
-	parser.add_option("-n", "--nowx", action="store_true", dest="nowx", default=False, help="give it to nowx's class")
 
 	(options, args) = parser.parse_args()
 
@@ -302,13 +301,22 @@ def main():
 	print "grabing "+`daysToGrab`+" days."
 	user_configured_channels = getUserChannels(userConfig)
 
-	if options.nowx:
-		xmlwriter = write_xml(all_channels)	
-		sys.exit(0)	
 
 	if not options.cache_mode:
 		getTvms(daysToGrab, daysOffset, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder)
 		runConverter(downloadFolder, tvmExtension, gzExtension, xmlExtension, gzsFolder, xmlTvmFolder)
+
+	if os.path.exists(xmlTvmFolder):
+		print xmlTvmFolder+" exists."
+		
+		count = 0	
+		for filename in os.listdir(xmlTvmFolder):
+			if re.search(xmlExtension+"$", filename):
+				count = count + 1
+
+		if count > 0:
+			print xmlTvmFolder+" contains some xml files."
+			xmlwriter = write_xml(all_channels,xmlTvmFolder)
 
 		
 
