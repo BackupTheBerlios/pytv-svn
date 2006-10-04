@@ -29,10 +29,10 @@ class convert_tvm_gz_xml:
 		
 	def tvm2gz(self):
 		# Opening the tvm and the new gzfile
-		if not(os.path.isfile(self.tvmfile)):
-			return 1
-		else:
+		if (os.path.isfile(self.tvmfile)) and (os.path.getsize(self.tvmfile) > 10000):
 			f = open(self.tvmfile, "rb")
+		else:
+			return 1
 			
 		g = open(self.gzfile, "wb")
 
@@ -71,10 +71,10 @@ class convert_tvm_gz_xml:
 		
 	def extract_gz(self):
 
-		if not(os.path.isfile(self.gzfile)):
-			return 1
-		else: 
+		if (os.path.isfile(self.gzfile)):
 			gzipfile = gzip.open(self.gzfile)
+		else: 
+			return 1
 		
 		g = open(self.xmlfile, "wb")
 		g.write(gzipfile.read())
