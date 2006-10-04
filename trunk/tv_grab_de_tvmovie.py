@@ -132,8 +132,8 @@ def runConfigure(userConfig,all_channels):
 		userConfig_file.close()
 			
 
-def getTvmDateString(dayOffset):
-	todaysDate = now() + RelativeDateTime(days=dayOffset)
+def getTvmDateString(dayOffset,dayStartOffset):
+	todaysDate = now() + RelativeDateTime(days=dayOffset+int(dayStartOffset))
 
 	if (todaysDate.day < 10):
 		dayStr = `0`+`todaysDate.day`
@@ -147,24 +147,25 @@ def getTvmDateString(dayOffset):
 
 	return `todaysDate.year`+str(monthStr)+str(dayStr)
 
-def getTvms(daysToGrab, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder):
+def getTvms(daysToGrab, daysOffset, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder):
 	print "downloading tvm files."
 	count = 0
 
 	for user_channel in user_configured_channels:
 		while count < int(daysToGrab):
-			downloadUrl = tvmXmlUrl+getTvmDateString(count)+"_"+user_channel+tvmExtension
+			tempTimeStr = getTvmDateString(count, daysOffset)
+			downloadUrl = tvmXmlUrl+tempTimeStr+"_"+user_channel+tvmExtension
 			print "downloading: "+downloadUrl
 			
 			urlHandler = urllib.urlopen(downloadUrl)
 			urlReader = urlHandler.read()
-			destFile = open(downloadFolder+getTvmDateString(count)+"_"+user_channel+tvmExtension, 'w')
+			destFile = open(downloadFolder+tempTimeStr+"_"+user_channel+tvmExtension, 'w')
 			destFile.write(urlReader)
 			destFile.close()	
-			if os.path.exists(downloadFolder+getTvmDateString(count)+"_"+user_channel+tvmExtension):
-				print "successfully downloaded: "+getTvmDateString(count)+"_"+user_channel+tvmExtension
+			if os.path.exists(downloadFolder+tempTimeStr+"_"+user_channel+tvmExtension):
+				print "successfully downloaded: "+tempTimeStr+"_"+user_channel+tvmExtension
 			else:
-				print "download of "+getTvmDateString(count)+"_"+user_channel+tvmExtension+" failed. exiting."
+				print "download of "+tempTimeStr+"_"+user_channel+tvmExtension+" failed. exiting."
 				sys.exit(1)
 			count = count + 1		
 
@@ -243,6 +244,13 @@ def main():
 			daysToGrab = 7
 		else:
 			daysToGrab = options.days
+
+
+	if not options.days_offset:
+		daysOffset = 0
+	else:
+		daysOffset = options.days_offset
+	
 	
 	
 	if options.channelid_file:
@@ -286,7 +294,7 @@ def main():
 		xmlwriter = write_xml(all_channels)	
 		sys.exit(0)	
 
-	getTvms(daysToGrab, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder)
+	getTvms(daysToGrab, daysOffset, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder)
 	runConverter(downloadFolder, tvmExtension, gzExtension, xmlExtension, gzsFolder, xmlTvmFolder)
 
 		
