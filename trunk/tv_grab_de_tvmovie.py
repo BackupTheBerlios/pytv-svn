@@ -228,6 +228,7 @@ def main():
 
 	if options.show_capabilities:
 		print "baseline"
+		print "manualconfig"
 		sys.exit(0)
 
 
