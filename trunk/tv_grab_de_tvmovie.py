@@ -25,8 +25,13 @@ import re
 import readline
 import os
 import sys
+
+sys.path.append('./xmlrewriter')
+sys.path.append('./converter')
+
 from optparse import OptionParser
 from write_xmltv import write_xml
+from convert_tvm_gz_xml import convert_tvm_gz_xml
 from mx.DateTime import *
 import urllib
 
@@ -143,7 +148,7 @@ def getTvmDateString(dayOffset):
 	return `todaysDate.year`+str(monthStr)+str(dayStr)
 
 def getTvms(daysToGrab, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder):
-	print "get tvms"
+	print "downloading tvm files."
 	count = 0
 
 	for user_channel in user_configured_channels:
@@ -162,6 +167,46 @@ def getTvms(daysToGrab, user_configured_channels, tvmXmlUrl, tvmExtension, downl
 				print "download of "+getTvmDateString(count)+"_"+user_channel+tvmExtension+" failed. exiting."
 				sys.exit(1)
 			count = count + 1		
+
+def runConverter(downloadFolder, tvmExtension, gzExtension, xmlExtension, gzsFolder, xmlTvmFolder):
+
+	print "reading files in "+downloadFolder
+
+	if not os.path.exists(gzsFolder):
+                os.makedirs(gzsFolder)
+
+	if not os.path.exists(xmlTvmFolder):
+		os.makedirs(xmlTvmFolder)
+
+
+	for filename in os.listdir(downloadFolder):
+		if re.search(tvmExtension+"$", filename):
+			tvmfilename = downloadFolder+filename
+			gzfilename = gzsFolder+filename
+			gzfilename = re.sub(tvmExtension,gzExtension,gzfilename)	
+			xmlfilename = xmlTvmFolder+filename
+			xmlfilename = re.sub(tvmExtension,xmlExtension,xmlfilename)
+
+			print "starting converter for: "+tvmfilename
+			tvmconverter = convert_tvm_gz_xml(tvmfilename, gzfilename, xmlfilename)
+
+			
+			if tvmconverter.tvm2gz() == 0:
+				print "successfully converted to gzip format."
+			else:
+				print "conversion to gzip format failed."
+				sys.exit(1)
+
+			if tvmconverter.extract_gz() == 0:
+				print "successfully created xml file: "+xmlfilename
+			else:
+				print "xml file creation failed."
+				sys.exit(1)
+
+			os.remove(tvmfilename)
+			os.remove(gzfilename)
+
+
 
 def main():
 
@@ -209,7 +254,9 @@ def main():
 		os.makedirs(pytvHome)
 
 	userConfig = pytvHome+"tv_grab_de_tvmovie.conf"
-	downloadFolder = pytvHome+os.sep+"grabedTvms"+os.sep
+	downloadFolder = pytvHome+"grabedTvms"+os.sep
+	gzsFolder = pytvHome+"convertedGzs"+os.sep
+	xmlTvmFolder = pytvHome+"tvmovieXmls"+os.sep
 
 	if not os.path.exists(downloadFolder):
 		os.makedirs(downloadFolder)
@@ -220,6 +267,8 @@ def main():
 		sys.exit(0)
 	
 	tvmExtension = ".xml.tvm"
+	gzExtension = ".gz"
+	xmlExtension = ".xml"
 	tvmXmlUrl = "http://tvmovie.kunde.serverflex.info/onlinedata/xml-gz5/"		
 
 	print "grabing "+`daysToGrab`+" days."
@@ -229,7 +278,9 @@ def main():
 		xmlwriter = write_xml(all_channels)	
 		sys.exit(0)	
 
-	#getTvms(daysToGrab, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder)
+	getTvms(daysToGrab, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder)
+	runConverter(downloadFolder, tvmExtension, gzExtension, xmlExtension, gzsFolder, xmlTvmFolder)
+
 		
 
 
