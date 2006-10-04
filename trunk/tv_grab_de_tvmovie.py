@@ -215,12 +215,14 @@ def main():
 	parser.add_option("-C", "--configure", action="store_true", dest="run_configure", default=False, help="configure your channel list")
 	parser.add_option("-D", "--days", dest="days", help="set number of days to grab. max 7 default 7")
 	parser.add_option("-O", "--offset", dest="days_offset", help="start with day offset form today")
+	parser.add_option("-s", "--share", dest="share_dir", help="share dir e.g. /usr/share/xmltv/")
 	parser.add_option("-f", "--config-file", dest="config_file", help="set the config file to use")
 	parser.add_option("-o", "--output", dest="output_file", help="set the output file")
 	parser.add_option("-c", "--channelid-file", dest="channelid_file", help="set location of the channel_ids file")
 	parser.add_option("-v", "--version", action="store_true", dest="show_version", default=False, help="show version")
 	parser.add_option("-b", "--capabilities", action="store_true", dest="show_capabilities", default=False, help="show capabilities")
 	parser.add_option("-q", "--quiet", action="store_true", dest="be_quiet", default=False, help="only error msgs")
+	parser.add_option("-a", "--cache", action="store_true", dest="cache_mode", default=False, help="use cached xml files")
 	parser.add_option("-n", "--nowx", action="store_true", dest="nowx", default=False, help="give it to nowx's class")
 
 	(options, args) = parser.parse_args()
@@ -229,7 +231,12 @@ def main():
 	if options.show_capabilities:
 		print "baseline"
 		print "manualconfig"
+		print "share"
+		print "cache"
 		sys.exit(0)
+
+
+		
 
 
 
@@ -253,11 +260,15 @@ def main():
 		daysOffset = options.days_offset
 	
 	
+	if options.share_dir:
+		shareDirectory = options.share_dir
+	else:
+		shareDirectory = "./" 
 	
 	if options.channelid_file:
-		channel_file=options.channelid_file		
+		channel_file=shareDirectory+os.sep+options.channelid_file		
 	else:
-		channel_file="./channel_ids"
+		channel_file=shareDirectory+os.sep+"channel_ids"
 
 	if not os.path.isfile(channel_file):
 		print "channel ids file not found: "+channel_file
@@ -295,8 +306,9 @@ def main():
 		xmlwriter = write_xml(all_channels)	
 		sys.exit(0)	
 
-	getTvms(daysToGrab, daysOffset, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder)
-	runConverter(downloadFolder, tvmExtension, gzExtension, xmlExtension, gzsFolder, xmlTvmFolder)
+	if not options.cache_mode:
+		getTvms(daysToGrab, daysOffset, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder)
+		runConverter(downloadFolder, tvmExtension, gzExtension, xmlExtension, gzsFolder, xmlTvmFolder)
 
 		
 
