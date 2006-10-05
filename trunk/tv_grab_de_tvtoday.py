@@ -122,8 +122,7 @@ def runConfigure(userConfig,all_channels):
 			break
 
 		elif answer == "no":
-			print "channel "++all_channels[channel_id]+ " skipped."
-			break
+			print "channel "+all_channels[channel_id]+ " skipped."
 
 	 userConfig_file.close()
 
@@ -149,9 +148,9 @@ def getTvmDateString(dayOffset,dayStartOffset):
 
 def getTvms(daysToGrab, daysOffset, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder):
 	print "downloading tvm files."
-	count = 0
 
 	for user_channel in user_configured_channels:
+		count = 0
 		while count < int(daysToGrab):
 			tempTimeStr = getTvmDateString(count, daysOffset)
 			downloadUrl = tvmXmlUrl+tempTimeStr+"_"+user_channel+tvmExtension
@@ -316,7 +315,7 @@ def main():
 
 		if count > 0:
 			print xmlTvmFolder+" contains some xml files."
-			xmlwriter = write_xml(all_channels,xmlTvmFolder)
+#			xmlwriter = write_xml(all_channels,xmlTvmFolder)
 
 		
 
