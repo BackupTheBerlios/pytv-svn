@@ -146,7 +146,7 @@ def getTvmDateString(dayOffset,dayStartOffset):
 
 	return `todaysDate.year`+str(monthStr)+str(dayStr)
 
-def getTvms(daysToGrab, daysOffset, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder):
+def getTvTodayPage(daysToGrab, daysOffset, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder):
 	print "downloading tvm files."
 
 	for user_channel in user_configured_channels:
@@ -292,29 +292,34 @@ def main():
 		runConfigure(userConfig,all_channels)
 		sys.exit(0)
 	
-	tvmExtension = ".xml.tvm"
-	gzExtension = ".gz"
-	xmlExtension = ".xml"
-	tvmXmlUrl = "http://tvmovie.kunde.serverflex.info/onlinedata/xml-gz5/"		
+	tvtMainUrl = "http://programm.tvtoday.de/tv/programm/programm.php"		
+	tvtCategoryStr = "sparte=alle" # no change needed we want all categories
+	tvtTimeStartStr = "uhrzeit=00%3A00%3A00" # no change needed we always start at 00:00:00 of a day
+	tvtDayOffsetStr = "ztag=" # day offset 0 = today, 1 = tomorrow and so on
+	tvtChannelStr = "sender=" # which channel, e.g. ARD
+	tvtNextPageStr = "von=" # next page, e.g. von=12 to show the second page, needed because tvtoday show max. 12 results per page
+
+	# example:
+	# "http://programm.tvtoday.de/tv/programm/programm.php?ztag=0&sparte=alle&uhrzeit=00%3A00%3A00&sender=ARD&von=12"
 
 	print "grabing "+`daysToGrab`+" days."
 	user_configured_channels = getUserChannels(userConfig)
 
 
-	if not options.cache_mode:
-		getTvms(daysToGrab, daysOffset, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder)
-		runConverter(downloadFolder, tvmExtension, gzExtension, xmlExtension, gzsFolder, xmlTvmFolder)
+#	if not options.cache_mode:
+#		getTvms(daysToGrab, daysOffset, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder)
+#		runConverter(downloadFolder, tvmExtension, gzExtension, xmlExtension, gzsFolder, xmlTvmFolder)
 
-	if os.path.exists(xmlTvmFolder):
-		print xmlTvmFolder+" exists."
+#	if os.path.exists(xmlTvmFolder):
+#		print xmlTvmFolder+" exists."
 		
-		count = 0	
-		for filename in os.listdir(xmlTvmFolder):
-			if re.search(xmlExtension+"$", filename):
-				count = count + 1
-
-		if count > 0:
-			print xmlTvmFolder+" contains some xml files."
+#		count = 0	
+#		for filename in os.listdir(xmlTvmFolder):
+#			if re.search(xmlExtension+"$", filename):
+#				count = count + 1
+#
+#		if count > 0:
+#			print xmlTvmFolder+" contains some xml files."
 #			xmlwriter = write_xml(all_channels,xmlTvmFolder)
 
 		
