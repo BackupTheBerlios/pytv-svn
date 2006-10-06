@@ -24,7 +24,7 @@ class dl_tvmovie:
 	def __init__(self, link, httpfile, von):
 		self.link = link
 		self.httpfile = httpfile
-		self.von = httpfile
+		self.von = von
 		
 	def download(self):
 		x = urllib.urlopen(self.link)
