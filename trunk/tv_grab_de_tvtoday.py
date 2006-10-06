@@ -25,13 +25,8 @@ import re
 import readline
 import os
 import sys
-
-#sys.path.append('./xmlrewriter')
-#sys.path.append('./converter')
-
 from optparse import OptionParser
-#from write_xmltv import write_xml
-#from convert_tvm_gz_xml import convert_tvm_gz_xml
+from dl_tvmovie import dl_tvmovie
 from mx.DateTime import *
 
 
@@ -147,6 +142,7 @@ def getTvmDateString(dayOffset,dayStartOffset):
 
 def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, tvtMainUrl, tvtCategoryStr, tvtTimeStartStr, tvtDayOffsetStr, tvtChannelStr, tvtNextPageStr):
 
+	fetcher = dl_tvmovie(tvtNextPageStr)
 	for user_channel in user_configured_channels.keys():
 		count = 0
 		while count < int(daysToGrab):
@@ -155,21 +151,9 @@ def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder,
 	# "http://programm.tvtoday.de/tv/programm/programm.php?ztag=0&sparte=alle&uhrzeit=00%3A00%3A00&sender=ARD&von=12"
 
 			downloadUrl = tvtMainUrl+"?"+tvtDayOffsetStr+`tempTimeStr`+"&"+tvtCategoryStr+"&"+tvtTimeStartStr+"&"+tvtChannelStr+user_configured_channels[user_channel]
-			print "download url for fetcher: "+downloadUrl
-			print "filename to save for fetcher: "+downloadFolder+user_channel+"_"+getTvmDateString(count, daysOffset)+".nohtml" 
-			print "next page variable for fetcher: "+tvtNextPageStr
-			print ""
+			print "fetcher should download: "+downloadUrl
+			fetcher.download(downloadUrl, downloadFolder+user_channel+"_"+getTvmDateString(count, daysOffset)+".nohtml")
 			
-			#urlHandler = urllib.urlopen(downloadUrl)
-			#urlReader = urlHandler.read()
-			#destFile = open(downloadFolder+tempTimeStr+"_"+user_channel+tvmExtension, 'w')
-			#destFile.write(urlReader)
-			#destFile.close()	
-			#if os.path.exists(downloadFolder+tempTimeStr+"_"+user_channel+tvmExtension):
-				#print "successfully downloaded: "+tempTimeStr+"_"+user_channel
-			#else:
-			#	print "download of "+tempTimeStr+"_"+user_channel+tvmExtension+" failed. exiting."
-			#	sys.exit(1)
 			count = count + 1		
 
 def runConverter(downloadFolder, tvmExtension, gzExtension, xmlExtension, gzsFolder, xmlTvmFolder):

@@ -21,14 +21,12 @@
 import urllib
 
 class dl_tvmovie:
-	def __init__(self, link, httpfile, von):
-		self.link = link
-		self.httpfile = httpfile
+	def __init__(self, von):
 		self.von = von
 		
-	def download(self):
-		x = urllib.urlopen(self.link)
-		f = open(self.httpfile, "w")
+	def download(self, link, httpfile):
+		x = urllib.urlopen(link)
+		f = open(httpfile, "w")
 		f.write(x.read())
 		
 		return 0
