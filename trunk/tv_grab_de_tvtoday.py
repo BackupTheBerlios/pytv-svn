@@ -4,7 +4,7 @@
 # Copyright (C) 2006  Stefan Nistelberger (scuq@kages.at)
 #		      Hans-Peter Schadler (blade.runner@gmx.at)
 #		      Daniel Schrammel (nowx@gmx.at)
-# tv_grab_de_tvmovie.py - tv movie grabber
+# tv_grab_de_tvtoday.py - tv today grabber
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -26,7 +26,7 @@ import readline
 import os
 import sys
 from optparse import OptionParser
-from dl_tvmovie import dl_tvmovie
+from dl_tvtoday import dl_tvtoday
 from mx.DateTime import *
 
 
@@ -142,7 +142,7 @@ def getTvmDateString(dayOffset,dayStartOffset):
 
 def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, tvtMainUrl, tvtCategoryStr, tvtTimeStartStr, tvtDayOffsetStr, tvtChannelStr, tvtNextPageStr):
 
-	fetcher = dl_tvmovie(tvtNextPageStr)
+	fetcher = dl_tvtoday(tvtNextPageStr)
 	for user_channel in user_configured_channels.keys():
 		count = 0
 		while count < int(daysToGrab):
