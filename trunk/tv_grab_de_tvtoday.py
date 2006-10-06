@@ -268,9 +268,9 @@ def main():
 		shareDirectory = "./" 
 	
 	if options.channelid_file:
-		channel_file=shareDirectory+os.sep+options.channelid_file		
+		channel_file=shareDirectory+options.channelid_file		
 	else:
-		channel_file=shareDirectory+os.sep+"channel_ids"
+		channel_file=shareDirectory+"channel_ids"
 
 	if not os.path.isfile(channel_file):
 		print "channel ids file not found: "+channel_file
