@@ -30,5 +30,5 @@ class dl_tvmovie:
 		x = urllib.urlopen(self.link)
 		f = open(self.httpfile, "w")
 		f.write(x.read())
-		print "nowx"	
+		
 		return 0
