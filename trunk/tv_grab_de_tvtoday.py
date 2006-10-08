@@ -248,6 +248,8 @@ def main():
 	
 	if options.share_dir:
 		shareDirectory = options.share_dir
+		if shareDirectory[-1] != os.sep:
+			shareDirectory = shareDirectory+os.sep
 	else:
 		shareDirectory = "./" 
 	
