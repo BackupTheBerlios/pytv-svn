@@ -140,9 +140,9 @@ def getTvmDateString(dayOffset,dayStartOffset):
 
 	return `todaysDate.year`+str(monthStr)+str(dayStr)
 
-def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, tvtMainUrl, tvtCategoryStr, tvtTimeStartStr, tvtDayOffsetStr, tvtChannelStr, tvtNextPageStr):
+def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, tvtMainUrl, tvtCategoryStr, tvtTimeStartStr, tvtDayOffsetStr, tvtChannelStr, tvtNextPageStr, tvtMoreShowsStr, tvtNextPageStrStep):
 
-	fetcher = dl_tvtoday(tvtNextPageStr)
+	fetcher = dl_tvtoday(tvtNextPageStr, tvtNextPageStrStep, tvtMoreShowsStr)
 	for user_channel in user_configured_channels.keys():
 		count = 0
 		while count < int(daysToGrab):
@@ -289,8 +289,10 @@ def main():
 	tvtDayOffsetStr = "ztag=" # day offset 0 = today, 1 = tomorrow and so on
 	tvtChannelStr = "sender=" # which channel, e.g. ARD
 	tvtNextPageStr = "von=" # next page, e.g. von=12 to show the second page, needed because tvtoday show max. 12 results per page
+	tvtMoreShowsStr = "weitere Sendungen"
+	tvtNextPageStrStep = 12
 	
-	runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, tvtMainUrl, tvtCategoryStr, tvtTimeStartStr, tvtDayOffsetStr, tvtChannelStr, tvtNextPageStr)
+	runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, tvtMainUrl, tvtCategoryStr, tvtTimeStartStr, tvtDayOffsetStr, tvtChannelStr, tvtNextPageStr, tvtMoreShowsStr, tvtNextPageStrStep)
 	
 
 	# example:

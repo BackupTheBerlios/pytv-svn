@@ -19,14 +19,29 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import urllib
+import re
 
 class dl_tvtoday:
-	def __init__(self, von):
+	def __init__(self, von, vonStep, moreShowsString):
 		self.von = von
+		self.vonStep = vonStep
+		self.moreShowsString = moreShowsString
 		
 	def download(self, link, httpfile):
-		x = urllib.urlopen(link)
+		weitereSendungen = 1
+		big_html_file = ""
+		von_start = 0
+		while weitereSendungen > 0:
+			x = urllib.urlopen(link+"&"+self.von+str(von_start))
+			html_contents = x.read()
+			if re.search(self.moreShowsString, html_contents):
+				big_html_file =  big_html_file + html_contents
+				von_start = von_start+self.vonStep
+			else:
+				weitereSendungen = 0
+				
+			
 		f = open(httpfile, "w")
-		f.write(x.read())
+		f.write(big_html_file)
 		
 		return 0
