@@ -101,11 +101,15 @@ def runConfigure(userConfig,all_channels):
 
 		answer = sys.stdin.readline()
 		answer = re.sub("\n$","",answer)
-
+		
 		if answer == "yes":
 			userConfig_file.write(channel_id+":"+all_channels[channel_id]+"\n")
 			print "channel "+all_channels[channel_id]+" added."
 
+		elif answer == "":
+			userConfig_file.write(channel_id+":"+all_channels[channel_id]+"\n")
+			print "channel "+all_channels[channel_id]+" added."
+	
 		elif answer == "all":
 		 	for chid in all_channels.keys():		
 				userConfig_file.write(chid+":"+all_channels[chid]+"\n")
@@ -114,7 +118,11 @@ def runConfigure(userConfig,all_channels):
 
 		elif answer == "no":
 			print "channel "+all_channels[channel_id]+ " skipped."
-	
+		
+		elif answer == "none":
+			print "all channels skipped."
+			break
+
 		else:
 			print "channel "+all_channels[channel_id]+ " skipped."
 
