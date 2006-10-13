@@ -26,13 +26,13 @@ import readline
 import os
 import sys
 from optparse import OptionParser
-from dl_tvtoday import dl_tvtoday
+#from dl_tvtoday import dl_tvtoday
 from mx.DateTime import *
 
 
 
 def printVersion():
-	print "version 0.2 - see svn log"
+	print "version  - see svn log"
 
 # suck in the channel_ids file into a dictionary
 def getChannelIDs(channel_file):
@@ -122,21 +122,22 @@ def getTvmDateString(dayOffset,dayStartOffset):
 	else:
 		monthStr = todaysDate.month
 
-	return `todaysDate.year`+str(monthStr)+str(dayStr)
+	#return `todaysDate.year`+str(monthStr)+str(dayStr)
+	return str(dayStr)+"."+str(monthStr)+"."+`todaysDate.year`
 
-def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, tvtMainUrl, tvtCategoryStr, tvtTimeStartStr, tvtDayOffsetStr, tvtChannelStr, tvtNextPageStr, tvtMoreShowsStr, tvtNextPageStrStep):
+def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, MainUrl, InfoStr, ChannelStr, DateStr):
 
-	fetcher = dl_tvtoday(tvtNextPageStr, tvtNextPageStrStep, tvtMoreShowsStr)
+	#fetcher = dl_tvtoday(tvtNextPageStr, tvtNextPageStrStep, tvtMoreShowsStr)
 	for user_channel in user_configured_channels.keys():
 		count = 0
 		while count < int(daysToGrab):
 			#tempTimeStr = getTvmDateString(count, daysOffset)
-			tempTimeStr = count + int(daysOffset)
+			tempTimeStr = getTvmDateString(count, daysOffset)
 	# "http://programm.tvtoday.de/tv/programm/programm.php?ztag=0&sparte=alle&uhrzeit=00%3A00%3A00&sender=ARD&von=12"
 
-			downloadUrl = tvtMainUrl+"?"+tvtDayOffsetStr+`tempTimeStr`+"&"+tvtCategoryStr+"&"+tvtTimeStartStr+"&"+tvtChannelStr+user_configured_channels[user_channel]
+			downloadUrl = MainUrl+"?"+ChannelStr+user_configured_channels[user_channel]+"&"+DateStr+str(tempTimeStr)
 			print "fetcher should download: "+downloadUrl
-			fetcher.download(downloadUrl, downloadFolder+user_channel+"_"+getTvmDateString(count, daysOffset)+".nohtml")
+	#		fetcher.download(downloadUrl, downloadFolder+user_channel+"_"+getTvmDateString(count, daysOffset)+".nohtml")
 			
 			count = count + 1		
 
@@ -253,7 +254,7 @@ def main():
 	if not os.path.exists(pytvHome):
 		os.makedirs(pytvHome)
 
-	userConfig = pytvHome+"tv_grab_de_tvmovie.conf"
+	userConfig = pytvHome+"pytv.conf"
 	downloadFolder = pytvHome+"fetchedPages"+os.sep
 
 	if not os.path.exists(downloadFolder):
@@ -265,42 +266,23 @@ def main():
 		sys.exit(0)
 
 	print "grabing "+`daysToGrab`+" days with an offset of: "+`daysOffset`
-	user_configured_channels = getChannelIDs(userConfig)
+
+	try:
+		user_configured_channels = getChannelIDs(userConfig)
+
+	except IOError:
+		print "no config file found. please run --configure."
 	
-	tvtMainUrl = "http://programm.tvtoday.de/tv/programm/programm.php"		
-	tvtCategoryStr = "sparte=alle" # no change needed we want all categories
-	tvtTimeStartStr = "uhrzeit=00%3A00%3A00" # no change needed we always start at 00:00:00 of a day
-	tvtDayOffsetStr = "ztag=" # day offset 0 = today, 1 = tomorrow and so on
-	tvtChannelStr = "sender=" # which channel, e.g. ARD
-	tvtNextPageStr = "von=" # next page, e.g. von=12 to show the second page, needed because tvtoday show max. 12 results per page
-	tvtMoreShowsStr = "weitere Sendungen"
-	tvtNextPageStrStep = 12
 	
-	runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, tvtMainUrl, tvtCategoryStr, tvtTimeStartStr, tvtDayOffsetStr, tvtChannelStr, tvtNextPageStr, tvtMoreShowsStr, tvtNextPageStrStep)
+	MainUrl = "http://www.siehferninfo.de/"
+	InfoStr = "textinfo="
+	ChannelStr = "sender="
+	DateStr = "viewdatum="
+
+	#runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, tvtMainUrl, tvtCategoryStr, tvtTimeStartStr, tvtDayOffsetStr, tvtChannelStr, tvtNextPageStr, tvtMoreShowsStr, tvtNextPageStrStep)
+	runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, MainUrl, InfoStr, ChannelStr, DateStr)
 	
 
-	# example:
-	# "http://programm.tvtoday.de/tv/programm/programm.php?ztag=0&sparte=alle&uhrzeit=00%3A00%3A00&sender=ARD&von=12"
-
-
-
-#	if not options.cache_mode:
-#		getTvms(daysToGrab, daysOffset, user_configured_channels, tvmXmlUrl, tvmExtension, downloadFolder)
-#		runConverter(downloadFolder, tvmExtension, gzExtension, xmlExtension, gzsFolder, xmlTvmFolder)
-
-#	if os.path.exists(xmlTvmFolder):
-#		print xmlTvmFolder+" exists."
-		
-#		count = 0	
-#		for filename in os.listdir(xmlTvmFolder):
-#			if re.search(xmlExtension+"$", filename):
-#				count = count + 1
-#
-#		if count > 0:
-#			print xmlTvmFolder+" contains some xml files."
-#			xmlwriter = write_xml(all_channels,xmlTvmFolder)
-
-		
 
 
 
