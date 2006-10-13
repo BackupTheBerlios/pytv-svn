@@ -125,7 +125,7 @@ def getTvmDateString(dayOffset,dayStartOffset):
 	#return `todaysDate.year`+str(monthStr)+str(dayStr)
 	return str(dayStr)+"."+str(monthStr)+"."+`todaysDate.year`
 
-def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, MainUrl, InfoStr, ChannelStr, DateStr):
+def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, MainUrl, InfoStr, ChannelStr, DateStr, descNumberMatchStr, mainHtmlStartStopStr, descHtmlStartStopStr):
 
 	fetcher = dl_page()
 	for user_channel in user_configured_channels.keys():
@@ -137,13 +137,13 @@ def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder,
 
 			downloadUrl = MainUrl+"?"+ChannelStr+user_configured_channels[user_channel]+"&"+DateStr+str(tempTimeStr)
 			print "fetcher should download: "+downloadUrl
-			description_numbers = fetcher.download_main(downloadUrl, downloadFolder+user_channel+"_"+tempTimeStr+".html")
+			description_numbers = fetcher.download_main(downloadUrl, downloadFolder+user_channel+"_"+tempTimeStr+".html", mainHtmlStartStopStr, descNumberMatchStr)
 			print description_numbers
 
 			for desc in description_numbers:
 				descUrl = MainUrl+"?"+InfoStr+desc
 				print "fetcher should download description: "+descUrl
-				fetcher.download_desc(descUrl, downloadFolder+user_channel+"_"+tempTimeStr+"_"+desc+".desc")
+				fetcher.download_desc(descUrl, downloadFolder+user_channel+"_"+tempTimeStr+"_"+desc+".desc", descHtmlStartStopStr)
 			
 			count = count + 1		
 
@@ -245,9 +245,13 @@ def main():
 	InfoStr = "textinfo="
 	ChannelStr = "sender="
 	DateStr = "viewdatum="
+	descNumberMatchStr = '\(([0-9]+)\)'
+        mainHtmlStartStopStr = '</h3>(.*?)</table>'
+        descHtmlStartStopStr = '<span(.*?)<form'
+
 
 	#runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, tvtMainUrl, tvtCategoryStr, tvtTimeStartStr, tvtDayOffsetStr, tvtChannelStr, tvtNextPageStr, tvtMoreShowsStr, tvtNextPageStrStep)
-	runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, MainUrl, InfoStr, ChannelStr, DateStr)
+	runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, MainUrl, InfoStr, ChannelStr, DateStr, descNumberMatchStr, mainHtmlStartStopStr, descHtmlStartStopStr)
 	
 
 

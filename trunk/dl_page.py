@@ -23,27 +23,41 @@ import re
 
 class dl_page:
 #	def __init__(self):
+
+
+	def cleanup_page(self, htmlstring, HtmlStartStopStr):
+	
+		html_snipper = re.compile(HtmlStartStopStr, re.DOTALL)
+		htmlstring_sniped = html_snipper.search(htmlstring)
+		htmlstring = htmlstring_sniped.group(1)
+		htmlstring = re.sub('^$', '', htmlstring)
+		htmlstring = re.sub('\r', '', htmlstring)
+		htmlstring = re.sub('\t', '', htmlstring)
+		htmlstring = re.sub('\n', '', htmlstring)
+		htmlstring = re.sub('</td>', '</td>\n', htmlstring)
+		htmlstring = re.sub('</tr>', '</tr>\n', htmlstring)
 		
-	def download_main(self, link, httpfile):
+		return htmlstring	
+
+		
+		
+		
+	def download_main(self, link, httpfile, HtmlStartStopStr, descNumberMatchStr ):
 		x = urllib.urlopen(link)
 		html_contents = x.read()
-		description_numbers = re.findall('\(([0-9]+)\)', html_contents)
-		html_snipper = re.compile('</h3>(.*?)</table>', re.DOTALL) 
-		html_contents_sniped = html_snipper.search(html_contents)
-		html_contents = html_contents_sniped.group(1)	
-		html_contents = re.sub('^$', '', html_contents)
-		html_contents = re.sub('\r', '', html_contents)
-		html_contents = re.sub('\t', '', html_contents)
-		html_contents = re.sub('\n', '', html_contents)
-		html_contents = re.sub('</td>', '</td>\n', html_contents)
-		html_contents = re.sub('</tr>', '</tr>\n', html_contents)
+		description_numbers = re.findall(descNumberMatchStr, html_contents)
+
+		html_contents = self.cleanup_page(html_contents, HtmlStartStopStr)
 		f = open(httpfile, "w")
 		f.write(html_contents)
 		
 		return description_numbers
 
-	def download_desc(self, link, httpfile):
+	def download_desc(self, link, httpfile, HtmlStartStopStr):
 		x = urllib.urlopen(link)
 		html_contents = x.read()
+
+		html_contents = self.cleanup_page(html_contents, HtmlStartStopStr)
+
 		f = open(httpfile, "w")
 		f.write(html_contents)
