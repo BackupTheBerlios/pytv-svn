@@ -125,7 +125,7 @@ def getTvmDateString(dayOffset,dayStartOffset):
 	#return `todaysDate.year`+str(monthStr)+str(dayStr)
 	return str(dayStr)+"."+str(monthStr)+"."+`todaysDate.year`
 
-def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, MainUrl, InfoStr, ChannelStr, DateStr, descNumberMatchStr, mainHtmlStartStopStr, descHtmlStartStopStr):
+def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, MainUrl, InfoStr, ChannelStr, DateStr, descNumberMatchStr, mainHtmlStartStopStr, descHtmlStartStopStr, ActorsInfoStr, descActorsHtmlStartStopStr):
 
 	fetcher = dl_page()
 	for user_channel in user_configured_channels.keys():
@@ -144,6 +144,10 @@ def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder,
 				descUrl = MainUrl+"?"+InfoStr+desc
 				print "fetcher should download description: "+descUrl
 				fetcher.download_desc(descUrl, downloadFolder+user_channel+"_"+tempTimeStr+"_"+desc+".desc", descHtmlStartStopStr)
+
+				actUrl = descUrl+"&"+ActorsInfoStr
+				print "fetcher should download actors description: "+actUrl
+				fetcher.download_desc(actUrl, downloadFolder+user_channel+"_"+tempTimeStr+"_"+desc+"_actors.desc", descHtmlStartStopStr)
 			
 			count = count + 1		
 
@@ -243,15 +247,17 @@ def main():
 	
 	MainUrl = "http://www.siehferninfo.de/"
 	InfoStr = "textinfo="
+	ActorsInfoStr = "detailview=2"
 	ChannelStr = "sender="
 	DateStr = "viewdatum="
 	descNumberMatchStr = '\(([0-9]+)\)'
         mainHtmlStartStopStr = '</h3>(.*?)</table>'
         descHtmlStartStopStr = '<span(.*?)<form'
+        descActorsHtmlStartStopStr = '<span(.*?)<form'
 
 
 	#runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, tvtMainUrl, tvtCategoryStr, tvtTimeStartStr, tvtDayOffsetStr, tvtChannelStr, tvtNextPageStr, tvtMoreShowsStr, tvtNextPageStrStep)
-	runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, MainUrl, InfoStr, ChannelStr, DateStr, descNumberMatchStr, mainHtmlStartStopStr, descHtmlStartStopStr)
+	runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, MainUrl, InfoStr, ChannelStr, DateStr, descNumberMatchStr, mainHtmlStartStopStr, descHtmlStartStopStr, ActorsInfoStr, descActorsHtmlStartStopStr)
 	
 
 
