@@ -1,7 +1,7 @@
 # Copyright (C) 2006  Stefan Nistelberger (scuq@kages.at)
 #		      Hans-Peter Schadler (blade.runner@gmx.at)
 #		      Daniel Schrammel (nowx@gmx.at)
-# tv_grab_de_tvtoday.py - tvtoday grabber
+# tv_grab_de_siehferninfo.py - tvtoday grabber
 # dl_page.py - downloads the tv program and saves it
 
 # This program is free software; you can redistribute it and/or
