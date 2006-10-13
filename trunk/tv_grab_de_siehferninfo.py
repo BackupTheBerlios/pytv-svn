@@ -26,7 +26,7 @@ import readline
 import os
 import sys
 from optparse import OptionParser
-#from dl_tvtoday import dl_tvtoday
+from dl_page import dl_page
 from mx.DateTime import *
 
 
@@ -127,7 +127,7 @@ def getTvmDateString(dayOffset,dayStartOffset):
 
 def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder, MainUrl, InfoStr, ChannelStr, DateStr):
 
-	#fetcher = dl_tvtoday(tvtNextPageStr, tvtNextPageStrStep, tvtMoreShowsStr)
+	fetcher = dl_page()
 	for user_channel in user_configured_channels.keys():
 		count = 0
 		while count < int(daysToGrab):
@@ -137,48 +137,10 @@ def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder,
 
 			downloadUrl = MainUrl+"?"+ChannelStr+user_configured_channels[user_channel]+"&"+DateStr+str(tempTimeStr)
 			print "fetcher should download: "+downloadUrl
-	#		fetcher.download(downloadUrl, downloadFolder+user_channel+"_"+getTvmDateString(count, daysOffset)+".nohtml")
+			description_numbers = fetcher.download_main(downloadUrl, downloadFolder+user_channel+"_"+tempTimeStr+".html")
+			print description_numbers
 			
 			count = count + 1		
-
-def runConverter(downloadFolder, tvmExtension, gzExtension, xmlExtension, gzsFolder, xmlTvmFolder):
-
-	print "reading files in "+downloadFolder
-
-	if not os.path.exists(gzsFolder):
-                os.makedirs(gzsFolder)
-
-	if not os.path.exists(xmlTvmFolder):
-		os.makedirs(xmlTvmFolder)
-
-
-	for filename in os.listdir(downloadFolder):
-		if re.search(tvmExtension+"$", filename):
-			tvmfilename = downloadFolder+filename
-			gzfilename = gzsFolder+filename
-			gzfilename = re.sub(tvmExtension,gzExtension,gzfilename)	
-			xmlfilename = xmlTvmFolder+filename
-			xmlfilename = re.sub(tvmExtension,xmlExtension,xmlfilename)
-
-			print "starting converter for: "+tvmfilename
-			tvmconverter = convert_tvm_gz_xml(tvmfilename, gzfilename, xmlfilename)
-
-			
-			if tvmconverter.tvm2gz() == 0:
-				print "successfully converted to gzip format."
-			else:
-				print "conversion to gzip format failed."
-				sys.exit(1)
-
-			if tvmconverter.extract_gz() == 0:
-				print "successfully created xml file: "+xmlfilename
-			else:
-				print "xml file creation failed."
-				sys.exit(1)
-
-			os.remove(tvmfilename)
-			os.remove(gzfilename)
-
 
 
 def main():
