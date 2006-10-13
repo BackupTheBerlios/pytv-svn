@@ -4,7 +4,7 @@
 # Copyright (C) 2006  Stefan Nistelberger (scuq@kages.at)
 #		      Hans-Peter Schadler (blade.runner@gmx.at)
 #		      Daniel Schrammel (nowx@gmx.at)
-# tv_grab_de_tv14.py - tv 14 grabber
+# tv_grab_de_tvworld.py - tv world grabber
 
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
