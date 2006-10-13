@@ -29,10 +29,15 @@ class dl_page:
 		x = urllib.urlopen(link)
 		html_contents = x.read()
 		description_numbers = re.findall('\(([0-9]+)\)', html_contents)
-		html_snipper = re.compile('Sender\ INFO(.*?)</body>', re.DOTALL) 
+		html_snipper = re.compile('</h3>(.*?)</table>', re.DOTALL) 
 		html_contents_sniped = html_snipper.search(html_contents)
 		html_contents = html_contents_sniped.group(1)	
 		html_contents = re.sub('^$', '', html_contents)
+		html_contents = re.sub('\r', '', html_contents)
+		html_contents = re.sub('\t', '', html_contents)
+		html_contents = re.sub('\n', '', html_contents)
+		html_contents = re.sub('</td>', '</td>\n', html_contents)
+		html_contents = re.sub('</tr>', '</tr>\n', html_contents)
 
 		
 		f = open(httpfile, "w")
