@@ -139,6 +139,11 @@ def runFetcher(daysToGrab, daysOffset, user_configured_channels, downloadFolder,
 			print "fetcher should download: "+downloadUrl
 			description_numbers = fetcher.download_main(downloadUrl, downloadFolder+user_channel+"_"+tempTimeStr+".html")
 			print description_numbers
+
+			for desc in description_numbers:
+				descUrl = MainUrl+"?"+InfoStr+desc
+				print "fetcher should download description: "+descUrl
+				fetcher.download_desc(descUrl, downloadFolder+user_channel+"_"+tempTimeStr+"_"+desc+".desc")
 			
 			count = count + 1		
 

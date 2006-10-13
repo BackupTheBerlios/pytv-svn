@@ -25,7 +25,6 @@ class dl_page:
 #	def __init__(self):
 		
 	def download_main(self, link, httpfile):
-		big_html_file = ""
 		x = urllib.urlopen(link)
 		html_contents = x.read()
 		description_numbers = re.findall('\(([0-9]+)\)', html_contents)
@@ -38,9 +37,13 @@ class dl_page:
 		html_contents = re.sub('\n', '', html_contents)
 		html_contents = re.sub('</td>', '</td>\n', html_contents)
 		html_contents = re.sub('</tr>', '</tr>\n', html_contents)
-
-		
 		f = open(httpfile, "w")
 		f.write(html_contents)
 		
 		return description_numbers
+
+	def download_desc(self, link, httpfile):
+		x = urllib.urlopen(link)
+		html_contents = x.read()
+		f = open(httpfile, "w")
+		f.write(html_contents)
