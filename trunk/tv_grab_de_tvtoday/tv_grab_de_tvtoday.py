@@ -34,30 +34,6 @@ from mx.DateTime import *
 def printVersion():
 	print "version 0.2 - see svn log"
 
-def getUserChannels(user_channels_file):
-	uchfile = open(user_channels_file, 'r')
-
-	userchids = []
-
-	while 1:
-		lineStr = uchfile.readline()
-		
-		if not (lineStr):
-			break
-
-		lineStr = re.sub("\n$","",lineStr)
-
-		userchids.append(lineStr)
-		
-
-	uchfile.close()
-
-
-
-	return userchids
-
-
-
 # suck in the channel_ids file into a dictionary
 def getChannelIDs(channel_file):
 	chidfile = open(channel_file, 'r')
